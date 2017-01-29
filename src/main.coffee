@@ -13,6 +13,13 @@ switch1 = gpio.export pins.switch, {
       do state.toggle
     }
 
+motion1 = gpio.export pins.motion1, {
+  direction: "in",
+  ready: () ->
+    motion1.on "change", () ->
+      lights.yellow.flash 300
+    }
+
 setTimeout () ->
   do state.arm
 , 2000
