@@ -5,5 +5,6 @@ module.exports = {
     yellow: 4,
     red: 17,
   },
-  speaker: 27
+  speaker: 27,
+  switch: 22
 }
