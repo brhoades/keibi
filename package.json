@@ -1,0 +1,13 @@
+{
+  "name": "keibi",
+  "version": "0.0.1",
+  "description": "Raspberry Pi motion-activated security alarm.",
+  "scripts": {
+    "build": "make compile",
+    "lint": "coffeelint -f coffeelint.json src/**/*"
+  },
+  "dependencies": {
+    "coffee-script": "~1.12.3",
+    "coffeelint": "~1.16.0"
+  }
+}
