@@ -39,7 +39,7 @@ class State
 
     @state = @states.ARMED
 
-    speaker.buzz 500
+    speaker.buzz 150, 500, 150
 
   disarm: () ->
     if @state == @states.DISARMED
@@ -52,9 +52,6 @@ class State
     @state = @states.DISARMED
 
     speaker.buzz 250
-    setTimeout () ->
-      speaker.buzz 250
-    , 500
 
 
 module.exports = (new State())

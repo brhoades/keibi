@@ -25,4 +25,4 @@ motion1 = gpio.export pins.motion1, {
 
 setTimeout () ->
   do state.arm
-, 2000
+, 1200
