@@ -10,8 +10,6 @@ class State
     }
 
     @state =  null
-    @lastchange = new Date().getTime()
-    @change_delay = 1000
 
     duration = 100
     # Startup
@@ -30,7 +28,7 @@ class State
       do this.disarm
 
   arm: () ->
-    if @state == @states.ARMED or not this._delay_elapsed()
+    if @state == @states.ARMED
       return
     # TODO timeout w/ flash / beep
 
@@ -42,7 +40,7 @@ class State
     @lastchange = new Date().getTime()
 
   disarm: () ->
-    if @state == @states.DISARMED or not this._delay_elapsed()
+    if @state == @states.DISARMED
       return
 
     do lights.red.off
@@ -50,10 +48,5 @@ class State
     console.log "DISARMED"
 
     @state = @states.DISARMED
-    @lastchange = new Date().getTime()
-
-  _delay_elapsed: () ->
-    return new Date().getTime() - @lastchange > @change_delay
-
 
 module.exports = (new State())
