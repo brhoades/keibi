@@ -1,4 +1,4 @@
-lights = require("#{__dirname}/lights")
+lights = require("#{__dirname}/lights").init(require("gpio"))
 speaker = require("#{__dirname}/spkr")
 
 class State

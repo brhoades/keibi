@@ -1,6 +1,6 @@
 gpio = require("gpio")
 pins = require("#{__dirname}/pins")
-lights = require("#{__dirname}/lights")
+lights = require("#{__dirname}/lights").init(gpio)
 utils = require("#{__dirname}/utils")
 speaker = require("#{__dirname}/spkr")
 

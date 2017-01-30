@@ -1,4 +1,4 @@
-gpio = require("gpio")
+gpio = null
 pins = require("#{__dirname}/pins")
 
 # Top level functions are general purpose
@@ -25,6 +25,10 @@ module.exports.delayed_flash = (num, wait, timeon) =>
   setTimeout () ->
     module.exports.flash(num, timeon)
   , wait
+
+module.exports.init = (in_gpio) ->
+  gpio = in_gpio
+  this
 
 # Then for each color we define these functions again... syntax sugar
 # Lets us do: lights.red.flash 1000 or lights.red.on
