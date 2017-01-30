@@ -2,7 +2,7 @@ gpio = require("gpio")
 pins = require("#{__dirname}/pins")
 lights = require("#{__dirname}/lights")
 utils = require("#{__dirname}/utils")
-# speaker = require("#{__dirname}/spkr")
+speaker = require("#{__dirname}/spkr")
 
 # initialize state
 state = require("#{__dirname}/state")

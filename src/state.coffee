@@ -1,4 +1,5 @@
 lights = require("#{__dirname}/lights")
+speaker = require("#{__dirname}/spkr")
 
 class State
   constructor: () ->
@@ -37,7 +38,8 @@ class State
     console.log "ARMED"
 
     @state = @states.ARMED
-    @lastchange = new Date().getTime()
+
+    speaker.buzz 500
 
   disarm: () ->
     if @state == @states.DISARMED
@@ -48,5 +50,11 @@ class State
     console.log "DISARMED"
 
     @state = @states.DISARMED
+
+    speaker.buzz 250
+    setTimeout () ->
+      speaker.buzz 250
+    , 500
+
 
 module.exports = (new State())
