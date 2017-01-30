@@ -1,5 +1,5 @@
 chai = require "chai"
-util = require "#{__dirname}/../src/utils.coffee"
+util = require "#{__dirname}/../src/client/utils.coffee"
 
 expect = chai.expect
 chai.should

@@ -10,7 +10,7 @@ describe "lights", ->
     it "should call pin.set for that pin", ->
       stub_pin = sinon.stub({set: () -> })
       stub_gpio = sinon.stub().export.returns(stub_pin)
-      lights = require("#{__dirname}/../src/lights").init(stub_gpio)
+      lights = require("#{__dirname}/../src/client/lights").init(stub_gpio)
 
       expect(stub_gpio.export.calledOnce).to.equal true
       expect(stub_pin.set.calledOnce).to.equal true
