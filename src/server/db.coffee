@@ -14,7 +14,8 @@ db.plugin Schema()
 class Client extends db.Model
   tableName: 'client'
   @schema [
-    StringField 'clientname'
+    StringField 'name'
+    StringField 'uuid'
     StringField 'secret'
   ]
 
@@ -27,3 +28,8 @@ class Log extends db.Model
 
     HasOne Client
   ]
+
+module.exports = {
+  client: Client
+  log: Log
+}

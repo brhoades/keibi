@@ -1,22 +1,34 @@
 restify = require "restify"
 db = require "#{__dirname}/db"
+uuidV4 = require "uuid/v4"
 
-utils = require "#{__dirname}/utils"
+utils = require "./utils"
 
-server = do restify.createServer
+server = restify.createServer()
 
 # initial connection
 # sends a secret back which must be included in all future queries
-server.get "/handshake/:client", (req, res, next) ->
-  client_id = req.params.client
-  secret = utils.random_id 21
-  res.send {
+server.get "/handshake/:name", (req, res, next) ->
+  name = req.params.name
+  uuid = uuidV4()
+  secret = utils.random_id(21)
+
+  client = new db.client {
+    uuid: uuid
+    name: name
     secret: secret
   }
 
-server.get "/:event/:client/:secret", (req, res, next) ->
+  res.send {
+    uuid: uuid
+    name: name
+    secret: secret
+    success: true
+  }
+
+server.get "/:event/:uuid/:secret", (req, res, next) ->
   secret = req.params.secret
-  client_id = req.params.client
+  uuid = req.params.uuid
   time = new Date().getTime
 
   # TODO: Client timeout
@@ -26,6 +38,8 @@ server.get "/:event/:client/:secret", (req, res, next) ->
     when "trigger" then
     when "disarm" then
     when "disassoc" then
+    else
+
 
 
 server.listen 63833
