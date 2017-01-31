@@ -1,31 +1,22 @@
 Schema = require 'bookshelf-schema'
 knex = require('knex')({
-  client: "sqlite3",
+  dialect: 'sqlite3'
   connection: {
-    database: "main.sqlite3"
+    filename: './main.db'
   }
 })
 db = require('bookshelf')(knex)
 db.plugin Schema()
 
-{StringField, DateTimeField, JSONField} = require 'bookshelf-schema/lib/fields'
 {HasOne} = require 'bookshelf-schema/lib/relations'
+
 
 class Client extends db.Model
   tableName: 'client'
-  @schema [
-    StringField 'name'
-    StringField 'uuid'
-    StringField 'secret'
-  ]
 
 class Log extends db.Model
   tableName: 'log'
   @schema [
-    StringField 'client_id'
-    DateTimeField 'time'
-    JSONField 'message'
-
     HasOne Client
   ]
 
@@ -33,3 +24,27 @@ module.exports = {
   client: Client
   log: Log
 }
+
+module.exports.init = ->
+  # Model Schema
+  knex.schema.createTableIfNotExists('client', (table) ->
+    console.log "Creating client table."
+    do table.increments
+
+    table.string 'name'
+    table.string 'uuid'
+    table.string 'secret'
+    do table.timestamps
+  ).then(->)
+
+  knex.schema.createTableIfNotExists('log', (table) ->
+    console.log "Creating log table."
+    do table.increments
+
+    table.json 'message'
+    table.integer('client_id').unsigned
+
+    table.foreign('client_id').references('client.id')
+    do table.timestamps
+  ).then(->)
+  this
