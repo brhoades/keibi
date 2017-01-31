@@ -7,12 +7,17 @@
     "lint": "coffeelint -f coffeelint.json src/**/*"
   },
   "dependencies": {
+    "bookshelf": "^0.10.3",
+    "bookshelf-schema": "^0.3.0",
     "chai": "^3.5.0",
     "coffee-script": "^1.12.3",
     "coffeelint": "^1.16.0",
     "gpio": "^0.2.7",
+    "knex": "^0.12.6",
     "mocha": "^3.0.2",
     "proxyquire": "^1.7.11",
-    "sinon": "^1.17.7"
+    "restify": "^4.3.0",
+    "sinon": "^1.17.7",
+    "sqlite3": "^3.1.8"
   }
 }
