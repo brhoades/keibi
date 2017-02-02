@@ -1,5 +1,4 @@
 bcrypt = require "bcrypt"
-Schema = require "bookshelf-schema"
 knex = require('knex')({
   dialect: 'sqlite3'
   connection: {
@@ -7,9 +6,6 @@ knex = require('knex')({
   }
 })
 db = require('bookshelf')(knex)
-db.plugin Schema()
-
-{HasOne} = require 'bookshelf-schema/lib/relations'
 
 utils = require "./utils"
 
@@ -19,13 +15,24 @@ class Client extends db.Model
 
 class Log extends db.Model
   tableName: 'log'
-  @schema [
-    HasOne Client
-  ]
+  client: () ->
+    @belongsTo Client
+
+class State extends db.Model
+  tableName: 'state'
+  client: () ->
+    @belongsTo Client
+
+class Event extends db.Model
+  tableName: 'event'
+  client: () ->
+    @belongsTo Client
 
 module.exports = {
   client: Client
   log: Log
+  state: State
+  event: Event
 }
 
 module.exports.init = ->
@@ -42,6 +49,26 @@ module.exports.init = ->
     do table.increments
 
     table.json 'message'
+    table.integer('client_id').unsigned
+
+    table.foreign('client_id').references('client.id')
+    do table.timestamps
+  ).then()
+
+  db.knex.schema.createTableIfNotExists('state', (table) ->
+    do table.increments
+
+    table.boolean 'armed'
+    table.integer('client_id').unsigned
+
+    table.foreign('client_id').references('client.id')
+    do table.timestamps
+  ).then()
+
+  db.knex.schema.createTableIfNotExists('event', (table) ->
+    do table.increments
+
+    table.string('type')
     table.integer('client_id').unsigned
 
     table.foreign('client_id').references('client.id')

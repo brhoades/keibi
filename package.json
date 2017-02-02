@@ -9,7 +9,6 @@
   "dependencies": {
     "bcrypt": "^1.0.2",
     "bookshelf": "^0.10.3",
-    "bookshelf-schema": "^0.3.0",
     "chai": "^3.5.0",
     "coffee-script": "^1.12.3",
     "coffeelint": "^1.16.0",

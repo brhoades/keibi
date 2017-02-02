@@ -32,7 +32,6 @@ server.get "/event/:event/:id/:secret", (req, res, next) ->
   switch req.params.event
     when "keep-alive"
       db.authenticate res, req, next, (client) ->
-        utils.respond res
         return next()
     when "arm" then
     when "trigger" then
@@ -43,7 +42,6 @@ server.get "/event/:event/:id/:secret", (req, res, next) ->
         success: false
       }
       return next()
-
 
 
 server.listen 63833
