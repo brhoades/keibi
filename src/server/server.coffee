@@ -13,7 +13,7 @@ server.get "/handshake/:name", (req, res, next) ->
   secret = utils.random_id(32)
   secret_hash = bcrypt.hashSync secret
 
-  client = new db.client({
+  new db.client({
     name: name
     secret_hash: secret_hash
   }).save().then (client) ->
@@ -32,7 +32,17 @@ server.get "/event/:event/:id/:secret", (req, res, next) ->
   switch req.params.event
     when "keep-alive"
       db.authenticate res, req, next, (client) ->
-        return next()
+        log = new db.log({
+          client_id: client.get "id"
+        }).save().then()
+
+      event = new db.event({
+          client_id: client.get "id"
+          type: req.params.event
+        }).save().then()
+      do next
+      return
+
     when "arm" then
     when "trigger" then
     when "disarm" then
@@ -41,7 +51,8 @@ server.get "/event/:event/:id/:secret", (req, res, next) ->
       utils.respond res, {
         success: false
       }
-      return next()
+      do next
+      return
 
 
 server.listen 63833

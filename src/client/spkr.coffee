@@ -1,24 +1,28 @@
-gpio = require("gpio")
-pins = require("#{__dirname}/pins")
+gpio = require "gpio"
+pins = require "./pins"
 
 module.exports = {
-  on: () ->
+  on: (cb=null) ->
     console.log "BUZZ"
     pin = gpio.export pins.speaker, {
       ready: () ->
         do pin.set
+        if cb
+          do cb
     }
-  off: () ->
+  off: (cb=null) ->
     console.log "BUZZ OFF"
     pin = gpio.export pins.speaker, {
       ready: () ->
         do pin.reset
+        if cb
+          do cb
     }
 }
 
 # Expects duration, delay, duration, delay... pattern.
 # Always turns the speaker off when done
-module.exports["buzz"] = (buzz_delay_pattern...) ->
+module.exports["buzz"] = (buzz_delay_pattern..., cb=null) ->
   sum = 0
 
   for duration, i in buzz_delay_pattern by 2
@@ -39,4 +43,6 @@ module.exports["buzz"] = (buzz_delay_pattern...) ->
 
   setTimeout () ->
     do module.exports.off
+    if cb
+      do cb
   , sum
