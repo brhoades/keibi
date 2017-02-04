@@ -1,10 +1,11 @@
-lights = require("/lights").init(require("gpio"))
+lights = require("./lights").init(require("gpio"))
 speaker = require "./spkr"
 
 events = require "events"
 
+
 class State
-  constructor: () ->
+  constructor: ->
     @states = {
       DISARMED: 0
       ARMED: 1
@@ -13,7 +14,7 @@ class State
     }
 
     # Time between a detected move and an alarm
-    @ALARM_BUFFER_TIME = 30000
+    @ALARM_BUFFER_TIME = 10000
 
     @state =  null
     @eventEmitter = new events.EventEmitter()
@@ -26,38 +27,41 @@ class State
         light.delayed_flash sum, duration
         sum += duration
 
-    do this.register_handlers
-    do this.arm
+    thisstate = this
+    setTimeout ->
+      do thisstate.register_handlers
+      do thisstate.arm
+    , sum
 
   # Toggle between armed and disarmed properly
-  toggle: () ->
+  toggle: ->
     if @state == @states.DISARMED
       do this.arm
     else
       do this.disarm
 
-  arm: () ->
+  arm: ->
     if @state == @states.ARMED
       return
 
     @eventEmitter.emit @states.ARMED
 
-  arm_handler: () ->
+  arm_handler: ->
     # TODO timeout w/ flash / beep
     do lights.green.off
     do lights.red.on
     console.log "ARMED"
 
-    speaker.buzz 150, 500, 150
+    # speaker.buzz 150, 500, 150
     @state = @states.ARMED
 
-  disarm: () ->
+  disarm: ->
     if @state == @states.DISARMED
       return
 
     @eventEmitter.emit @states.DISARMED
 
-  disarm_handler: () ->
+  disarm_handler: ->
     do lights.red.off
     do lights.green.on
     console.log "DISARMED"
@@ -65,43 +69,64 @@ class State
     speaker.buzz 250
     @state = @states.DISARMED
 
-  trip: () ->
-    lights.yellow.flash 600
+  trip: ->
+    lights.yellow.flash 500
+    console.log "--> TRIP"
     if @state != @states.ARMED
       #TODO: If we're triggered, still log
       return
 
     @eventEmitter.emit @states.TRIPPED
 
-  trip_handler: () ->
+  trip_handler: ->
     @state = @states.TRIPPED
-    @eventEmitter.emit @states.TRIPPED
     console.log "TRIPPED"
+    thisstate = this
 
     # Fire a warning buzz, then countdown.
-    speaker.buzz 250, 500, 250, 500, 250, () ->
-    # If we're still tripped
+    speaker.buzz 250, 500, 250, 500, 250
+
+    do () ->
+      # If we're still tripped
+
       start = new Date().getTime()
-      alarm = new Promise (resolve, reject) ->
-        setTimeout () ->
-          @alarm alarm,
+      setTimeout ->
+        # Fire alarm if we're still tripped after the buffer time.
+        thisstate.eventEmitter.emit thisstate.states.ALARM
+      , thisstate.ALARM_BUFFER_TIME
 
-          @eventEmitter.emit @states.ALARM
-        , @ALARM_BUFFER_TIME
+      thisstate.eventEmitter.on thisstate.states.DISARMED, ->
+        console.log "DISARMED AFTER TRIP"
 
-      @eventEmitter.on @states.DISARMED, () ->
+  alarm: ->
+    if @state != @states.TRIPPED
+      console.log "ALARM but not tripped, ignoring"
+      return
 
-
-
-
-
-  register_handlers: () ->
-    @eventEmitter.on @states.ARMED, @arm_handler
-    @eventEmitter.on @states.DISARMED, @disarm_handler
-    @eventEmitter.on @states.TRIPPED, @trip_handler
+    @eventEmitter.emit @states.ALARM
 
 
+  alarm_handler: ->
+    console.log "ALARM"
+    @state = @states.ALARM
+    scream = ->
+      speaker.buzz 1000
 
+      setTimeout scream, 1000
+    do scream
+
+
+
+  register_handlers: ->
+    thisstate = this
+    @eventEmitter.on @states.ARMED, ->
+      do thisstate.arm_handler
+    @eventEmitter.on @states.DISARMED, ->
+      do thisstate.disarm_handler
+    @eventEmitter.on @states.TRIPPED, ->
+      do thisstate.trip_handler
+    @eventEmitter.on @states.ALARM, ->
+      do thisstate.alarm_handler
 
 
 module.exports = (new State())

@@ -18,11 +18,7 @@ switch1 = gpio.export pins.switch, {
 motion1 = gpio.export pins.motion1, {
   direction: "in",
   ready: () ->
-    motion1.on "change", utils.buffer_input_fn(750, () ->
+    motion1.on "change", utils.buffer_input_fn(550, () ->
       do state.trip
     )
 }
-
-setTimeout () ->
-  do state.arm
-, 1200

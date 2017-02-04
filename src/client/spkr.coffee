@@ -22,7 +22,7 @@ module.exports = {
 
 # Expects duration, delay, duration, delay... pattern.
 # Always turns the speaker off when done
-module.exports["buzz"] = (buzz_delay_pattern..., cb=null) ->
+module.exports["buzz"] = (buzz_delay_pattern...) ->
   sum = 0
 
   for duration, i in buzz_delay_pattern by 2
@@ -43,6 +43,4 @@ module.exports["buzz"] = (buzz_delay_pattern..., cb=null) ->
 
   setTimeout () ->
     do module.exports.off
-    if cb
-      do cb
   , sum
