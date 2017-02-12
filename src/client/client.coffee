@@ -1,24 +1,16 @@
-gpio = require("gpio")
-pins = require("#{__dirname}/pins")
-lights = require("#{__dirname}/lights").init(gpio)
-utils = require("#{__dirname}/utils")
-speaker = require("#{__dirname}/spkr")
+gpio = require("./gpio")
+pins = require("./pins")
+lights = require("./lights").init(gpio)
+utils = require("./utils")
+speaker = require("./spkr")
 
 # initialize state
-state = require("#{__dirname}/state")
+state = require("./state")
 
-switch1 = gpio.export pins.switch, {
-  direction: "in",
-  ready: () ->
-    switch1.on "change", utils.buffer_input_fn(1000, () ->
-      do state.toggle
-    )
-}
+gpio.in pins.switch, utils.buffer_input_fn(1000, ->
+  do state.toggle
+)
 
-motion1 = gpio.export pins.motion1, {
-  direction: "in",
-  ready: () ->
-    motion1.on "change", utils.buffer_input_fn(550, () ->
-      do state.trip
-    )
-}
+gpio.in pins.motion1, utils.buffer_input_fn(550, ->
+  do state.trip
+)

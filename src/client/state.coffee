@@ -1,4 +1,4 @@
-lights = require("./lights").init(require("gpio"))
+lights = require("./lights").init(require("./gpio"))
 speaker = require "./spkr"
 
 events = require "events"
@@ -52,7 +52,7 @@ class State
     do lights.red.on
     console.log "ARMED"
 
-    # speaker.buzz 150, 500, 150
+    speaker.buzz 150, 500, 150
     @state = @states.ARMED
 
   disarm: ->
@@ -76,6 +76,7 @@ class State
       #TODO: If we're triggered, still log
       return
 
+    console.log "TRIP"
     @eventEmitter.emit @states.TRIPPED
 
   trip_handler: ->
@@ -105,7 +106,6 @@ class State
 
     @eventEmitter.emit @states.ALARM
 
-
   alarm_handler: ->
     console.log "ALARM"
     @state = @states.ALARM
@@ -114,8 +114,6 @@ class State
 
       setTimeout scream, 1000
     do scream
-
-
 
   register_handlers: ->
     thisstate = this
