@@ -2,7 +2,7 @@ gpio = require("./gpio")
 pins = require("./pins")
 lights = require("./lights").init(gpio)
 utils = require("./utils")
-speaker = require("./spkr")
+speaker = require("./spkr").init(gpio)
 
 # initialize state
 state = require("./state")

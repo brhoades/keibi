@@ -1,23 +1,26 @@
-gpio = require "gpio"
+gpio = null
 pins = require "./pins"
 
 module.exports = {
-  on: (cb=null) ->
+  on: () ->
     console.log "BUZZ"
-    pin = gpio.export pins.speaker, {
-      ready: () ->
-        do pin.set
-        if cb
-          do cb
-    }
-  off: (cb=null) ->
+    gpio.set pins.speaker
+
+  on: (cb) ->
+    console.log "BUZZ"
+    gpio.set pins.speaker, cb
+
+  off: () ->
     console.log "BUZZ OFF"
-    pin = gpio.export pins.speaker, {
-      ready: () ->
-        do pin.reset
-        if cb
-          do cb
-    }
+    gpio.reset pins.speaker
+
+  off: (cb) ->
+    console.log "BUZZ OFF"
+    gpio.reset pins.speaker, cb
+
+  init: (in_gpio) ->
+    gpio = in_gpio
+    this
 }
 
 # Expects duration, delay, duration, delay... pattern.

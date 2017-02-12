@@ -1,5 +1,7 @@
-lights = require("./lights").init(require("./gpio"))
-speaker = require "./spkr"
+gpio = require("./gpio")
+
+lights = require("./lights").init(gpio)
+speaker = require("./spkr").init(gpio)
 
 events = require "events"
 
